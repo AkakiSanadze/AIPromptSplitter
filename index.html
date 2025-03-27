@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Splitter</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <!-- Favicon Links -->
+    <link rel="icon" href="favicon.png" type="image/png"> <!-- Use favicon.png -->
+    <link rel="apple-touch-icon" href="favicon.png"> <!-- Use favicon.png for Apple touch icon -->
+    <link rel="manifest" href="manifest.webmanifest"> <!-- Keep manifest link -->
+</head>
+<body class="bg-gray-50 min-h-screen dark:bg-gray-900">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-800 dark:text-white">AI Prompt Splitter</h1>
+                    <p class="text-gray-600 dark:text-gray-300 mt-1">Split long texts into AI-processable chunks <a href="how-it-works.html" class="text-sm text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 ml-1">(How this works)</a></p>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="theme-light" class="theme-btn bg-white border border-gray-300 p-1 rounded" title="Light Mode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </button>
+                    <button id="theme-dark" class="theme-btn bg-gray-800 text-white p-1 rounded" title="Dark Mode">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                    <button id="theme-system" class="theme-btn bg-gray-100 dark:bg-gray-700 p-1 rounded" title="System Preference">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Prompt Management Column -->
+            <div class="lg:col-span-1">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-4">
+                    <h2 class="text-xl font-semibold mb-3 dark:text-white">Prompt Management</h2>
+                    <div class="mb-3">
+                        <label for="prompt-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prompt Name</label>
+                        <input id="prompt-name" type="text" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    </div>
+                    <div class="mb-3">
+                        <label for="prompt-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Prompt Content</label>
+                        <textarea id="prompt-input" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" rows="5"></textarea>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button id="save-prompt" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded flex-grow">Save Prompt</button>
+                        <button id="update-prompt" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded hidden">Update</button>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-medium dark:text-white">Saved Prompts</h3>
+                            <span id="prompt-counter" class="text-sm text-gray-500 dark:text-gray-400">0/10</span>
+                        </div>
+                        <ul id="prompt-list" class="border rounded divide-y dark:border-gray-600 max-h-96 overflow-y-auto"></ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Text Processing Column -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow mb-4">
+                    <h2 class="text-xl font-semibold mb-3 dark:text-white">Text Processing</h2>
+                    <div class="mb-3">
+                        <label for="text-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Input Text</label>
+                        <textarea id="text-input" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white" min-height="200px"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3">
+                        <div>
+                            <label for="chunk-size" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Chunk Size</label>
+                            <input id="chunk-size" type="number" value="15000" min="100" class="w-full border rounded p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            <div class="mt-1 flex flex-wrap gap-1">
+                                <button data-size="15000" class="chunk-preset-btn text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">15k</button>
+                                <button data-size="20000" class="chunk-preset-btn text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">20k</button>
+                                <button data-size="25000" class="chunk-preset-btn text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">25k</button>
+                                <button data-size="35000" class="chunk-preset-btn text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">35k</button>
+                                <button data-size="50000" class="chunk-preset-btn text-xs bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-700 dark:text-gray-200 px-2 py-0.5 rounded">50k</button>
+                            </div>
+                        </div>
+                        <div class="flex items-end md:col-span-2">
+                            <input id="wrap-prompt" type="checkbox" checked class="mr-2 h-5 w-5">
+                            <label for="wrap-prompt" class="text-sm font-medium text-gray-700 dark:text-gray-300">Wrap with prompt tags</label>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                            <span id="char-count">0</span> characters, 
+                            <span id="token-count">0</span> tokens
+                        </div>
+                        <button id="process-btn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Process Text</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Output Section -->
+        <section class="mt-8">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold dark:text-white">Output</h2>
+                    <div class="flex space-x-2">
+                        <button id="expand-all" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-1 rounded text-sm dark:text-white">Expand All</button>
+                        <button id="collapse-all" class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 px-3 py-1 rounded text-sm dark:text-white">Collapse All</button>
+                        <button id="copy-all" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Copy All</button>
+                    </div>
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                    <span id="chunk-count">0</span> chunks generated | 
+                    Total: <span id="total-chars">0</span> chars, 
+                    <span id="total-tokens">0</span> tokens
+                </div>
+                <div id="output-container" class="space-y-3"></div>
+            </div>
+        </section>
+    </div>
+    
+
+    <script src="app.js"></script>
+
+    <footer class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 mt-8 border-t dark:border-gray-700">
+        © 2025 AI Prompt Splitter
+    </footer>
+</body>
+</html>

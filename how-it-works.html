@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How the AI Prompt Splitter Works</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+    <!-- Favicon Links -->
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+</head>
+<body class="bg-gray-50 min-h-screen dark:bg-gray-900">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <header class="mb-8 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">How the AI Prompt Splitter Works</h1>
+            <a href="index.html" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">&larr; Back to Splitter</a>
+        </header>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
+            <div class="text-gray-700 dark:text-gray-300 space-y-4">
+                <p>This tool helps you break down long pieces of text into smaller chunks that are suitable for processing by Large Language Models (LLMs) like ChatGPT, Claude, etc., which often have input size limits.</p>
+
+                <h2 class="text-xl font-semibold mt-6 pt-4 border-t dark:border-gray-600 dark:text-white">1. Prompt Management (Optional)</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Save Prompts:</strong> If you frequently use the same instructions (prompts) with your text, you can save them here. Enter a <strong>Prompt Name</strong> and the <strong>Prompt Content</strong>, then click <strong>Save Prompt</strong>.</li>
+                    <li><strong>Select & Use:</strong> Click on a saved prompt in the list to load its content into the "Prompt Content" box on the main page.</li>
+                    <li><strong>Update/Delete:</strong> Click a saved prompt to load it. You can then modify the name or content and click <strong>Update</strong>. To delete, click the trash icon next to the prompt name.</li>
+                    <li><strong>Limit:</strong> You can save up to 10 prompts.</li>
+                    <li><strong>Storage:</strong> Saved prompts are stored locally in your web browser's storage (<code>localStorage</code>). They are not sent to any server.</li>
+                </ul>
+
+                <h2 class="text-xl font-semibold mt-6 pt-4 border-t dark:border-gray-600 dark:text-white">2. Text Processing</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Input Text:</strong> Paste or type the long text you want to split into the <strong>Input Text</strong> area on the main page.</li>
+                    <li><strong>Chunk Size:</strong> Specify the maximum desired size for each chunk in <strong>characters</strong>. The tool tries to split at natural breaks (like paragraphs) near this size. <em>Note: The actual chunk size might vary slightly.</em></li>
+                    <li><strong>Wrap with prompt tags:</strong> If checked, the content from the "Prompt Content" box will be added before <em>each</em> chunk, enclosed in <code class="bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 rounded">&lt;prompt&gt;</code> and <code class="bg-gray-100 dark:bg-gray-700 text-red-600 dark:text-red-400 px-1 rounded">&lt;/prompt&gt;</code> tags. This is useful for giving the AI context or instructions for every piece of the split text.</li>
+                    <li><strong>Character/Token Count:</strong> See the estimated character and token count of your input text. Tokens are how LLMs often measure text length (roughly 3-4 characters per token, but varies).</li>
+                    <li><strong>Process Text:</strong> Click this button to split your input text based on the settings.</li>
+                </ul>
+
+                <h2 class="text-xl font-semibold mt-6 pt-4 border-t dark:border-gray-600 dark:text-white">3. Output</h2>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Chunks:</strong> The processed text appears on the main page, divided into numbered chunks.</li>
+                    <li><strong>Counts:</strong> See the total number of chunks generated, and the total characters/tokens across all chunks.</li>
+                    <li><strong>Expand/Collapse All:</strong> Show or hide the content of all chunks at once.</li>
+                    <li><strong>Copy All:</strong> Copies the content of <em>all</em> chunks to your clipboard, formatted and ready to paste.</li>
+                    <li><strong>Individual Chunk Controls:</strong> Click the header of a chunk to expand/collapse it. Use the copy icon within a chunk's header to copy only that chunk's content.</li>
+                </ul>
+
+                <h2 class="text-xl font-semibold mt-6 pt-4 border-t dark:border-gray-600 dark:text-white">Understanding Chunks & Tokens</h2>
+                <p>LLMs have limits on how much text they can process at once (context window). This tool splits your text <em>below</em> a specified character limit (<code>Chunk Size</code>). We also show an estimated <em>token</em> count, as tokens are the actual units models use. By splitting text, you can feed long documents or conversations to an AI piece by piece.</p>
+            </div>
+        </div>
+    </div>
+    <!-- No JS needed for this static page, but theme preference might be nice later -->
+    <script>
+        function applyTheme(theme) {
+            console.log('Applying theme:', theme);
+            document.documentElement.setAttribute('data-theme', theme);
+            // For system theme, let CSS media queries handle it
+            if (theme !== 'system') {
+                document.documentElement.style.colorScheme = theme;
+            } else {
+                // Ensure color-scheme is removed if switching back to system
+                 document.documentElement.style.colorScheme = '';
+            }
+        }
+
+        // Apply theme on initial load
+        let savedTheme = localStorage.getItem('theme');
+        if (!savedTheme || !['light', 'dark', 'system'].includes(savedTheme)) {
+            savedTheme = 'system'; // Default to system if invalid or not set
+        }
+        // console.log('Initial theme from localStorage (or default):', savedTheme); // Removed log
+        applyTheme(savedTheme);
+
+        // Optional: Listen for changes from other tabs/windows
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'theme') {
+                const newTheme = event.newValue;
+                // console.log('Theme changed in another tab/window:', newTheme); // Removed log
+                if (['light', 'dark', 'system'].includes(newTheme)) {
+                    applyTheme(newTheme);
+                }
+            }
+        });
+
+        // Optional: Listen for system theme changes if current theme is 'system'
+        const systemThemeMedia = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleSystemThemeChange = (e) => {
+            if (localStorage.getItem('theme') === 'system') {
+                console.log('System theme changed to:', e.matches ? 'dark' : 'light');
+                applyTheme('system');
+            }
+        };
+        systemThemeMedia.addEventListener('change', handleSystemThemeChange);
+
+    </script>
+
+    <footer class="text-center text-sm text-gray-500 dark:text-gray-400 py-4 mt-8 border-t dark:border-gray-700">
+        © 2025 AI Prompt Splitter
+    </footer>
+</body>
+</html>
