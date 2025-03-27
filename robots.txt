@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /how-it-works.html
+Allow: /styles.css
+Allow: /app.js
+Allow: /favicon.png
+
+Sitemap: https://aipromptspliiter.vercel.app/sitemap.xml
