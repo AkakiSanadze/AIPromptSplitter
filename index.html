@@ -61,7 +61,10 @@
                     <div class="mt-4">
                         <div class="flex justify-between items-center mb-2">
                             <h3 class="font-medium dark:text-white">Saved Prompts</h3>
-                            <span id="prompt-counter" class="text-sm text-gray-500 dark:text-gray-400">0/10</span>
+                            <div class="flex items-center space-x-2">
+                                <button id="delete-all-prompts" class="text-xs text-red-500 hover:text-red-700 dark:hover:text-red-400" title="Delete All Prompts">Delete All</button>
+                                <span id="prompt-counter" class="text-sm text-gray-500 dark:text-gray-400">0/10</span>
+                            </div>
                         </div>
                         <ul id="prompt-list" class="border rounded divide-y dark:border-gray-600 max-h-96 overflow-y-auto"></ul>
                     </div>
@@ -100,7 +103,10 @@
                             <span id="char-count">0</span> characters, 
                             <span id="token-count">0</span> tokens
                         </div>
-                        <button id="process-btn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Process Text</button>
+                        <div class="flex space-x-2">
+                            <button id="reset-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded">Reset</button>
+                            <button id="process-btn" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Process Text</button>
+                        </div>
                     </div>
                 </div>
             </div>

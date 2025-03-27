@@ -88,7 +88,9 @@ class PromptSplitter {
             tokenCount: document.getElementById('token-count'),
             chunkCount: document.getElementById('chunk-count'),
             totalChars: document.getElementById('total-chars'),
-            totalTokens: document.getElementById('total-tokens')
+            totalTokens: document.getElementById('total-tokens'),
+            resetBtn: document.getElementById('reset-btn'), // Add reset button
+            deleteAllPromptsBtn: document.getElementById('delete-all-prompts') // Add delete all prompts button
         };
         
         this.elements.chunkSizeInput.value = this.settings.chunkSize;
@@ -162,7 +164,8 @@ class PromptSplitter {
 
             // Text content div
             const textDiv = document.createElement('div');
-            textDiv.className = 'flex-grow cursor-pointer';
+            // Add min-w-0 to prevent text from pushing buttons out
+            textDiv.className = 'flex-grow cursor-pointer min-w-0';
             // Use innerHTML here for simplicity with nested divs and dynamic content
             textDiv.innerHTML = `
                 <div class="font-medium dark:text-white">${prompt.name}</div>
@@ -216,6 +219,10 @@ class PromptSplitter {
         this.elements.promptUpdateBtn.addEventListener('click', () => {
             this.updatePrompt();
         });
+
+        this.elements.deleteAllPromptsBtn.addEventListener('click', () => { // Add listener for delete all
+            this.deleteAllPrompts();
+        });
         
         this.elements.promptList.addEventListener('click', (e) => {
             if (e.target.classList.contains('delete-prompt')) {
@@ -244,6 +251,10 @@ class PromptSplitter {
         });
 
         // Text processing
+        this.elements.resetBtn.addEventListener('click', () => { // Add listener for reset button
+            this.resetProcessing();
+        });
+
         this.elements.processBtn.addEventListener('click', () => {
             this.processText();
         });
@@ -324,6 +335,20 @@ class PromptSplitter {
             if (this.editingIndex === index) {
                 this.resetPromptForm();
             }
+        }
+    }
+
+    deleteAllPrompts() {
+        if (this.prompts.length === 0) {
+            alert("There are no prompts to delete.");
+            return;
+        }
+        if (confirm('Are you sure you want to delete ALL saved prompts? This cannot be undone.')) {
+            this.prompts = [];
+            this.savePrompts();
+            this.renderPromptList();
+            this.resetPromptForm(); // Also reset the form if a prompt was being edited
+            console.log("All prompts deleted.");
         }
     }
     
@@ -508,6 +533,21 @@ class PromptSplitter {
             console.error("Error processing text:", error);
             alert("Error processing text. Please check console for details.");
         }
+    }
+
+    resetProcessing() {
+        console.log('Resetting processing area...');
+        this.elements.textInput.value = '';
+        this.elements.outputContainer.innerHTML = '';
+        this.chunks = [];
+        this.copiedChunks.clear();
+        
+        // Reset counters
+        this.elements.charCount.textContent = '0';
+        this.elements.tokenCount.textContent = '0';
+        this.elements.chunkCount.textContent = '0';
+        this.elements.totalChars.textContent = '0';
+        this.elements.totalTokens.textContent = '0';
     }
     
     renderOutput() {
