@@ -538,6 +538,7 @@ class PromptSplitter {
     resetProcessing() {
         console.log('Resetting processing area...');
         this.elements.textInput.value = '';
+        this.elements.promptInput.value = ''; // Clear the prompt input field
         this.elements.outputContainer.innerHTML = '';
         this.chunks = [];
         this.copiedChunks.clear();
